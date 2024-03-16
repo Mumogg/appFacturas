@@ -10,14 +10,15 @@ public class Factura {
     private Cliente cliente;
     private ItemFactura[] items;
     private int indiceItems;
-    public static final int MaxItems = 10;
+    public static final int MAX_ITEMS = 12;
     private static int ultimoFolio;
 
     public Factura(String desc, Cliente cliente) {
         this.desc = desc;
         this.cliente = cliente;
-        this.items = new ItemFactura[MaxItems];
+        this.items = new ItemFactura[MAX_ITEMS];
         this.folio = ++ultimoFolio;
+        this.fecha = new Date();
     }
 
     public int getFolio() {
@@ -53,14 +54,15 @@ public class Factura {
     }
 
     public void addItemFacturas(ItemFactura item) {
-        if (indiceItems < MaxItems)
+        if (indiceItems < MAX_ITEMS) {
             this.items[indiceItems++] = item;
+        }
     }
 
     public float calcularTotal() {
         float total = 0.0f;
         for (ItemFactura item : this.items) {
-            if(items == null){
+            if (item == null) {
                 continue;
             }
             total += item.calcularImporte();
@@ -69,19 +71,18 @@ public class Factura {
     }
 
     public String generarDetalle() {
-        StringBuilder sb = new StringBuilder("Factura N: ");
+        StringBuilder sb = new StringBuilder("Factura Nº: ");
         sb.append(folio)
                 .append("\nCliente: ")
                 .append(this.cliente.getNombre())
-                .append("\t Nif: ")
-                .append(this.cliente.getNif())
-                .append("\nDescripcion: ")
+                .append("\t NIF: ")
+                .append(cliente.getNif())
+                .append("\nDescripción: ")
                 .append(this.desc)
                 .append("\n");
 
-
         SimpleDateFormat df = new SimpleDateFormat("dd 'de' MMMM, yyyy");
-        sb.append("Fecha de emicion")
+        sb.append("Fecha Emisión: ")
                 .append(df.format(this.fecha))
                 .append("\n")
                 .append("\n#\tNombre\t$\tCant.\tTotal\n");
@@ -90,19 +91,19 @@ public class Factura {
             if(item == null){
                 continue;
             }
-            sb.append("\t")
-                    .append(item.getProducto().getCodigo())
+            sb.append(item.getProducto().getCodigo())
                     .append("\t")
                     .append(item.getProducto().getNombre())
                     .append("\t")
                     .append(item.getProducto().getPrecio())
-                    .append("\t").append(item.getCantidad())
+                    .append("\t")
+                    .append(item.getCantidad())
                     .append("\t")
                     .append(item.calcularImporte())
-                    .append("\t");
-
+                    .append("\n");
         }
-        sb.append(("\nGran Total: ")).append(calcularTotal());
+        sb.append("\nGran Total: ")
+                .append(calcularTotal());
 
         return sb.toString();
     }
